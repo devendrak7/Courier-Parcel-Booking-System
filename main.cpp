@@ -29,8 +29,24 @@ public:
 private:
     string fileName;
 };
-
+int Courier::calculateCharge(int weight)
+{
+    return 50+(weight*20);
+}
+int Courier::calculateCharge(int weight, int distance)
+{
+    return 70+(weight*15)+(distance/2);
+}
+int Courier::calculateCharge(int weight, int distance, int speedClass)
+{
+    int extraCharge=0;
+    if(speedClass==2)
+        extraCharge=100;
+    else if(speedClass==3)
+        extraCharge=200;
+    return 100+(weight*25)+distance+extraCharge;
+}
 int main(){
-    
+
     return 0;
 }
