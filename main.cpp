@@ -29,6 +29,7 @@ public:
     void saveBooking(const Parcel& p);
     void printReceipt(const Parcel& p);
     void displayMenu();
+    void searchBooking();
 private:
     string fileName;
 };
@@ -192,6 +193,56 @@ void Courier::bookParcel()
     printReceipt(p);
 }
 
+void Courier::searchBooking()
+{
+    ifstream fin(fileName);
+    if(!fin)
+    {
+        cout<<endl<<"No booking records found!"<<endl;
+        return;
+    }
+    string searchID;
+    cout<<endl<<"Enter Tracking ID: ";
+    cin>>searchID;
+    string id, name, w, l, wd, h, sType, dist, sClass, chg;
+    bool found=false;
+    while(getline(fin, id, '|'))
+    {
+        getline(fin, name, '|');
+        getline(fin, w, '|');
+        getline(fin, l, '|');
+        getline(fin, wd, '|');
+        getline(fin, h, '|');
+        getline(fin, sType, '|');
+        getline(fin, dist, '|');
+        getline(fin, sClass, '|');
+        getline(fin, chg);
+        if(id==searchID)
+        {
+            Parcel p;
+            p.trackingID=id;
+            p.customerName=name;
+            p.weight=stoi(w);
+            p.length=stoi(l);
+            p.width=stoi(wd);
+            p.height=stoi(h);
+            p.serviceType=stoi(sType);
+            p.distance=stoi(dist);
+            p.speedClass=stoi(sClass);
+            p.charge=stoi(chg);
+            cout<<endl<<"Booking Found Successfully!"<<endl;
+            printReceipt(p);
+            found=true;
+            break;
+        }
+    }
+    fin.close();
+    if(!found)
+    {
+        cout<<endl<<"No booking found with Tracking ID: "<<searchID<<endl;
+    }
+}
+
 void Courier::displayMenu()
 {
     cout<<endl;
@@ -219,7 +270,7 @@ int main()
                 courier.bookParcel();
                 break;
             case 2:
-                // courier.searchBooking();
+                courier.searchBooking();
                 break;
             case 3:
                 cout<<endl<<"Thank you for using Courier Management System!"<<endl;
