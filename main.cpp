@@ -52,7 +52,19 @@ int Courier::calculateCharge(int weight, int distance, int speedClass)
     return 100+(weight*25)+distance+extraCharge;
 }
 
-
+string Courier::generateTrackingID()
+{
+    ifstream fin(fileName);
+    string line;
+    int count=0;
+    while(getline(fin, line))
+    {
+        if(!line.empty())
+            count++;
+    }
+    fin.close();
+    return "CR"+to_string(1000+count+1);
+}
 
 void Courier::bookParcel()
 {
@@ -114,7 +126,7 @@ void Courier::bookParcel()
         }
         p.charge=calculateCharge(p.weight, p.distance, p.speedClass);
     }
-    // p.trackingID=generateTrackingID();
+    p.trackingID=generateTrackingID();
     // saveBooking(p);
     // printReceipt(p);
 }
