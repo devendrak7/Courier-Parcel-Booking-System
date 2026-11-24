@@ -28,6 +28,7 @@ public:
     string generateTrackingID();
     void saveBooking(const Parcel& p);
     void printReceipt(const Parcel& p);
+    void displayMenu();
 private:
     string fileName;
 };
@@ -64,6 +65,66 @@ string Courier::generateTrackingID()
     }
     fin.close();
     return "CR"+to_string(1000+count+1);
+}
+
+void Courier::saveBooking(const Parcel& p)
+{
+    ofstream fout(fileName, ios::app);
+    if(!fout)
+    {
+        cout<<"Error opening booking file!"<<endl;
+        return;
+    }
+    fout<<p.trackingID<<"|"
+        <<p.customerName<<"|"
+        <<p.weight<<"|"
+        <<p.length<<"|"
+        <<p.width<<"|"
+        <<p.height<<"|"
+        <<p.serviceType<<"|"
+        <<p.distance<<"|"
+        <<p.speedClass<<"|"
+        <<p.charge<<endl;
+    fout.close();
+    cout<<endl<<"Booking saved successfully!"<<endl;
+}
+
+void Courier::printReceipt(const Parcel& p)
+{
+    cout<<endl;
+    cout<<"============================================"<<endl;
+    cout<<"           COURIER BOOKING RECEIPT          "<<endl;
+    cout<<"============================================"<<endl;
+    cout<<"Tracking ID   : "<<p.trackingID<<endl;
+    cout<<"Customer Name : "<<p.customerName<<endl;
+    cout<<"Weight        : "<<p.weight<<" kg"<<endl;
+    cout<<"Dimensions    : "<<p.length<<" x "<<p.width<<" x "<<p.height<<" cm"<<endl;
+    cout<<"Service Type  : ";
+    if(p.serviceType==1)
+        cout<<"Local"<<endl;
+    else if(p.serviceType==2)
+        cout<<"Domestic"<<endl;
+    else
+        cout<<"Express"<<endl;
+    if(p.serviceType==2 || p.serviceType==3)
+    {
+        cout<<"Distance      : "<<p.distance<<" km"<<endl;
+    }
+    if(p.serviceType==3)
+    {
+        cout<<"Speed Class   : ";
+        if(p.speedClass==1)
+            cout<<"Standard Express"<<endl;
+        else if(p.speedClass==2)
+            cout<<"Priority Express"<<endl;
+        else
+            cout<<"Same-Day Express"<<endl;
+    }
+    cout<<"--------------------------------------------"<<endl;
+    cout<<"Total Charge  : Rs. "<<p.charge<<endl;
+    cout<<"============================================"<<endl;
+    cout<<"           Thank You For Booking!           "<<endl;
+    cout<<"============================================"<<endl;
 }
 
 void Courier::bookParcel()
@@ -127,10 +188,45 @@ void Courier::bookParcel()
         p.charge=calculateCharge(p.weight, p.distance, p.speedClass);
     }
     p.trackingID=generateTrackingID();
-    // saveBooking(p);
-    // printReceipt(p);
+    saveBooking(p);
+    printReceipt(p);
 }
-int main(){
 
+void Courier::displayMenu()
+{
+    cout<<endl;
+    cout<<"============================================"<<endl;
+    cout<<"          COURIER MANAGEMENT SYSTEM         "<<endl;
+    cout<<"============================================"<<endl;
+    cout<<"1. Book New Parcel"<<endl;
+    cout<<"2. Search Booking by Tracking ID"<<endl;
+    cout<<"3. Exit"<<endl;
+    cout<<"============================================"<<endl;
+}
+
+int main()
+{
+    Courier courier;
+    int choice;
+    do
+    {
+        courier.displayMenu();
+        cout<<"Enter your choice: ";
+        cin>>choice;
+        switch(choice)
+        {
+            case 1:
+                courier.bookParcel();
+                break;
+            case 2:
+                // courier.searchBooking();
+                break;
+            case 3:
+                cout<<endl<<"Thank you for using Courier Management System!"<<endl;
+                break;
+            default:
+                cout<<endl<<"Invalid choice! Please select 1-3."<<endl;
+        }
+    }while(choice!=3);
     return 0;
 }
